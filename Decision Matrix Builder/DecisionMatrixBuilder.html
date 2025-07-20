@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Decision Matrix Builder</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 1rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: center; }
+    input[type='number'], input[type='text'] { width: 100%; }
+    button { margin-top: 1rem; padding: 0.5rem 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Decision Matrix Builder</h1>
+  <p>Enter your options and rate them by Impact, Cost, Urgency, and Confidence to calculate priority scores for clear decisions.</p>
+
+  <table id="matrixTable">
+    <thead>
+      <tr>
+        <th>Option</th>
+        <th>Impact (1-5)</th>
+        <th>Cost (1-5, inverse)</th>
+        <th>Urgency (1-5)</th>
+        <th>Confidence (1-5)</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody id="matrixBody">
+      <tr>
+        <td><input type="text" placeholder="Option name" /></td>
+        <td><input type="number" min="1" max="5" value="3" /></td>
+        <td><input type="number" min="1" max="5" value="3" /></td>
+        <td><input type="number" min="1" max="5" value="3" /></td>
+        <td><input type="number" min="1" max="5" value="3" /></td>
+        <td class="score">-</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button onclick="addRow()">Add Option</button>
+  <button onclick="calculateScores()">Calculate Scores</button>
+
+  <script>
+    function addRow() {
+      const table = document.getElementById('matrixBody');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><input type="text" placeholder="Option name" /></td>
+        <td><input type="number" min="1" max="5" value="3" /></td>
+        <td><input type="number" min="1" max="5" value="3" /></td>
+        <td><input type="number" min="1" max="5" value="3" /></td>
+        <td><input type="number" min="1" max="5" value="3" /></td>
+        <td class="score">-</td>
+      `;
+      table.appendChild(row);
+    }
+
+    function calculateScores() {
+      const rows = document.querySelectorAll('#matrixBody tr');
+      rows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        const impact = parseInt(inputs[1].value);
+        const cost = 6 - parseInt(inputs[2].value); // inverse cost
+        const urgency = parseInt(inputs[3].value);
+        const confidence = parseInt(inputs[4].value);
+        const score = impact * 0.4 + cost * 0.2 + urgency * 0.3 + confidence * 0.1;
+        row.querySelector('.score').textContent = score.toFixed(2);
+      });
+    }
+  </script>
+</body>
+</html>
