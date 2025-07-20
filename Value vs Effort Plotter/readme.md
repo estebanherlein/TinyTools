@@ -14,7 +14,7 @@ Many teams and indie builders overcomplicate prioritization. This tool keeps it 
 
 ## ⚙️ Usage
 
-- Open `index.html` in your browser.
+- Open `valueEffortPlotter.html` in your browser.
 - Input your task details.
 - Use the quadrant to guide your decisions.
 ## 📈 Ideal for
