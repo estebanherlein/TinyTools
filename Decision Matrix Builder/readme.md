@@ -24,6 +24,8 @@ Startups and small teams face many decisions: which feature to build, which hire
 - Enter your options and rate them to receive a priority view.
 - Use in meetings, planning sessions, or personal decision-making.
 
+👉 Live Demo: [Try it live](https://htmlpreview.github.io/?https://github.com/estebanherlein/TinyTools/blob/main/Decision%20Matrix%20Builder/DecisionMatrixBuilder.html). 
+
 ## 🤝 Contributions
 
 Suggestions and improvements are welcome!

@@ -17,6 +17,9 @@ Many teams and indie builders overcomplicate prioritization. This tool keeps it 
 - Open `valueEffortPlotter.html` in your browser.
 - Input your task details.
 - Use the quadrant to guide your decisions.
+
+👉 Live Demo: [Try it live](https://htmlpreview.github.io/?https://github.com/estebanherlein/TinyTools/blob/main/Value%20vs%20Effort%20Plotter/valueEffortPlotter.html). 
+
 ## 📈 Ideal for
 
 Product managers, small teams, founders planning MVP roadmaps.
@@ -24,3 +27,9 @@ Product managers, small teams, founders planning MVP roadmaps.
 ## 👋 About Me
 
 I build small tools that remove workflow friction and enable faster, happier teams. Connect on [LinkedIn](https://www.linkedin.com/in/esteban-herlein).
+
+
+
+
+
+https://htmlpreview.github.io/?https://github.com/estebanherlein/TinyTools/blob/main/Value%20vs%20Effort%20Plotter/valueEffortPlotter.html

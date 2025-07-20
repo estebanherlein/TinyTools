@@ -22,6 +22,8 @@ Early-stage founders often lack clear visibility into how their revenue, costs, 
 - Open `CashFlowVisualizer.html` in your browser
 - Enter your values and explore scenarios
 
+👉 Live Demo: [Try it live](https://htmlpreview.github.io/?https://github.com/estebanherlein/TinyTools/blob/main/Cash%20Flow%20Visualizer/CashFlowVisualizer.html). 
+
 ## 📈 Ideal For
 
 - Founders planning fundraising or hiring
