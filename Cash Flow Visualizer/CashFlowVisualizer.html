@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cash Flow Visualizer</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 1rem; }
+    input { width: 100%; padding: 0.5rem; margin: 0.5rem 0; }
+    label { font-weight: bold; }
+    canvas { margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <h1>Cash Flow Visualizer</h1>
+  <p>Input your starting cash, monthly revenue, and costs to visualize your runway and break-even point instantly.</p>
+
+  <label>Starting Cash ($)</label>
+  <input type="number" id="startingCash" value="20000" />
+
+  <label>Monthly Revenue ($)</label>
+  <input type="number" id="monthlyRevenue" value="5000" />
+
+  <label>Monthly Costs ($)</label>
+  <input type="number" id="monthlyCosts" value="8000" />
+
+  <label>Monthly Revenue Growth (%)</label>
+  <input type="number" id="revenueGrowth" value="0" />
+
+  <button onclick="calculateCashFlow()">Visualize</button>
+
+  <canvas id="cashFlowChart" width="400" height="200"></canvas>
+
+  <script>
+    let chart;
+    function calculateCashFlow() {
+      const startingCash = parseFloat(document.getElementById('startingCash').value);
+      let monthlyRevenue = parseFloat(document.getElementById('monthlyRevenue').value);
+      const monthlyCosts = parseFloat(document.getElementById('monthlyCosts').value);
+      const revenueGrowth = parseFloat(document.getElementById('revenueGrowth').value) / 100;
+
+      const months = 24;
+      let cash = startingCash;
+      const cashFlow = [cash];
+
+      for (let i = 1; i <= months; i++) {
+        cash += monthlyRevenue - monthlyCosts;
+        cashFlow.push(cash);
+        monthlyRevenue *= (1 + revenueGrowth);
+      }
+
+      const labels = Array.from({length: months + 1}, (_, i) => `Month ${i}`);
+      if (chart) chart.destroy();
+      const ctx = document.getElementById('cashFlowChart').getContext('2d');
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Cash Over Time ($)',
+            data: cashFlow,
+            borderColor: 'teal',
+            backgroundColor: 'rgba(0, 128, 128, 0.1)',
+            fill: true,
+            tension: 0.2
+          }]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+    calculateCashFlow();
+  </script>
+</body>
+</html>
