@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interview Streamliner</title>
+<style>
+  body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 1rem; }
+  label { display: block; margin-top: 1rem; font-weight: bold; }
+  input, select, textarea { width: 100%; padding: 0.5rem; margin-top: 0.25rem; }
+  button { margin-top: 1rem; padding: 0.5rem 1rem; }
+  pre { background: #f0f0f0; padding: 0.5rem; white-space: pre-wrap; word-wrap: break-word; }
+</style>
+</head>
+<body>
+<h1>Interview Streamliner</h1>
+<p>Use this tool to quickly capture structured interview notes and generate a summary to copy into your ATS or Slack.</p>
+
+<label>Candidate Name</label>
+<input type="text" id="candidateName" placeholder="John Doe">
+
+<label>Position</label>
+<input type="text" id="position" placeholder="Backend Engineer">
+
+<label>Technical Skills (1-5)</label>
+<input type="number" id="techSkill" min="1" max="5" value="3">
+
+<label>Communication (1-5)</label>
+<input type="number" id="communication" min="1" max="5" value="3">
+
+<label>Problem-Solving (1-5)</label>
+<input type="number" id="problemSolving" min="1" max="5" value="3">
+
+<label>Culture Fit (1-5)</label>
+<input type="number" id="cultureFit" min="1" max="5" value="3">
+
+<label>Learning Potential (1-5)</label>
+<input type="number" id="learningPotential" min="1" max="5" value="3">
+
+<label>Verdict</label>
+<select id="verdict">
+  <option value="Strong Hire">Strong Hire</option>
+  <option value="Hire">Hire</option>
+  <option value="No Hire">No Hire</option>
+</select>
+
+<label>Notes</label>
+<textarea id="notes" rows="4" placeholder="Notes on the candidate..."></textarea>
+
+<button onclick="generateSummary()">Generate Summary</button>
+
+<label>Generated Summary (copy below)</label>
+<pre id="summaryOutput"></pre>
+
+<button onclick="copySummary()">Copy to Clipboard</button>
+
+<script>
+function generateSummary() {
+  const name = document.getElementById('candidateName').value;
+  const position = document.getElementById('position').value;
+  const tech = parseInt(document.getElementById('techSkill').value);
+  const comm = parseInt(document.getElementById('communication').value);
+  const prob = parseInt(document.getElementById('problemSolving').value);
+  const culture = parseInt(document.getElementById('cultureFit').value);
+  const learning = parseInt(document.getElementById('learningPotential').value);
+  const verdict = document.getElementById('verdict').value;
+  const notes = document.getElementById('notes').value;
+
+  const avg = (tech + comm + prob + culture + learning) / 5;
+  let seniority = 'Junior';
+  if (avg >= 4.2) seniority = 'Senior';
+  else if (avg >= 3.2) seniority = 'Mid';
+
+  const summary = `Candidate: ${name}\n` +
+                  `Position: ${position}\n` +
+                  `Seniority: ${seniority}\n` +
+                  `Ratings: Tech ${tech}, Comm ${comm}, Problem ${prob}, Culture ${culture}, Learning ${learning}\n` +
+                  `Verdict: ${verdict}\n` +
+                  `Notes: ${notes}`;
+  document.getElementById('summaryOutput').textContent = summary;
+}
+
+function copySummary() {
+  const summary = document.getElementById('summaryOutput').textContent;
+  navigator.clipboard.writeText(summary).then(() => {
+    alert('Summary copied to clipboard!');
+  });
+}
+</script>
+
+</body>
+</html>
