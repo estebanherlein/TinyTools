@@ -13,9 +13,10 @@ Each tool in this repository is:
 ## 📦 Tools Included
 
 - **Value vs Effort Plotter** – Visualize tasks to prioritize high-impact, low-effort items.
+- **Meeting Timer Nudger** – Keep meetings on track with gentle timeboxing nudges.
 - **Interview Streamliner** – Score and summarize candidates quickly with structured, lightweight evaluations.
 - **Cash Flow Visualizer** – See your burn, runway, and break-even visually to make founder-level decisions fast.
-- **Decision Matrix Builder** – Compare and prioritize features, hires, or projects objectively using weighted scoring.
+- **Decision Matrix Builder** – Compare and prioritize features, hires, or projects objectively using weighted. scoring.
 
 ---
 

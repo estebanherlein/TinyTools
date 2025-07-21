@@ -21,7 +21,7 @@ Interviewing in fast-paced teams often means scattered notes, unclear evaluation
 - Open `InterviewStreamliner.html` in your browser
 - Use during interviews and copy summaries post-interview
     
-👉 Live Demo: [Try it live](https://htmlpreview.github.io/?https://github.com/estebanherlein/TinyTools/blob/main/Meeting%20Timer%20Nudger/meetingTimerNudger.html). 
+👉 Live Demo: [Try it live](https://htmlpreview.github.io/?https://github.com/estebanherlein/TinyTools/blob/main/Interview%20Streamliner/InterviewStreamliner.html). 
 
 ## 📈 Ideal for
 
