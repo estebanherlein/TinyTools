@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tiny 1:1 Tracker</title>
+<style>
+body { margin: 0; font-family: sans-serif; display: flex; height: 100vh; }
+#sidebar { width: 200px; background: #333; color: #fff; padding: 1em; overflow-y: auto; display: flex; flex-direction: column; align-items: stretch; }
+#main { flex: 1; padding: 1em; overflow-y: auto; }
+button, input, textarea { width: 100%; box-sizing: border-box; margin-top: 0.5em; padding: 0.5em; }
+.note { background: #f1f1f1; padding: 0.5em; margin-top: 0.5em; border-radius: 4px; }
+section { margin-top: 1em; }
+#reportList button { width: 100%; box-sizing: border-box; }
+</style>
+</head>
+<body>
+<div id="sidebar">
+  <h3>Reports</h3>
+  <div id="reportList"></div>
+  <input id="newReport" placeholder="New report name" style="width: 100%; box-sizing: border-box;">
+  <button onclick="addReport()">Add Report</button>
+</div>
+<div id="main">
+  <h2 id="currentReport">Select a report</h2>
+  <div id="noteForm" style="display:none;">
+    <textarea id="wins" placeholder="Wins"></textarea>
+    <textarea id="challenges" placeholder="Challenges"></textarea>
+    <textarea id="topics" placeholder="Topics"></textarea>
+    <textarea id="actionItems" placeholder="Action Items"></textarea>
+    <button onclick="saveNote()">Save Note</button>
+    <button onclick="exportData()">Export</button>
+    <input type="file" id="importFile" onchange="importData(event)">
+  </div>
+  <section id="notes"></section>
+</div>
+<script>
+let data = JSON.parse(localStorage.getItem('tiny1on1tracker') || '{}');
+let current = null;
+const reportList = document.getElementById('reportList');
+const currentReport = document.getElementById('currentReport');
+const noteForm = document.getElementById('noteForm');
+const notesDiv = document.getElementById('notes');
+function saveData() { localStorage.setItem('tiny1on1tracker', JSON.stringify(data)); }
+function renderReports() {
+  reportList.innerHTML = '';
+  Object.keys(data).forEach(r => {
+    const btn = document.createElement('button');
+    btn.textContent = r;
+    btn.onclick = () => selectReport(r);
+    reportList.appendChild(btn);
+  });
+}
+function addReport() {
+  const name = document.getElementById('newReport').value.trim();
+  if (name && !data[name]) { data[name] = []; saveData(); renderReports(); }
+  document.getElementById('newReport').value = '';
+}
+function selectReport(name) {
+  current = name;
+  currentReport.textContent = name;
+  noteForm.style.display = 'block';
+  renderNotes();
+}
+function saveNote() {
+  if (!current) return;
+  const note = {
+    date: new Date().toLocaleString(),
+    wins: document.getElementById('wins').value,
+    challenges: document.getElementById('challenges').value,
+    topics: document.getElementById('topics').value,
+    actionItems: document.getElementById('actionItems').value
+  };
+  data[current].push(note);
+  saveData();
+  document.getElementById('wins').value = '';
+  document.getElementById('challenges').value = '';
+  document.getElementById('topics').value = '';
+  document.getElementById('actionItems').value = '';
+  renderNotes();
+}
+function renderNotes() {
+  notesDiv.innerHTML = '';
+  data[current].slice().reverse().forEach(n => {
+    const div = document.createElement('div');
+    div.className = 'note';
+    div.innerHTML = `<strong>${n.date}</strong><br>
+    <strong>Wins:</strong> ${n.wins.replace(/\n/g,'<br>')}<br>
+    <strong>Challenges:</strong> ${n.challenges.replace(/\n/g,'<br>')}<br>
+    <strong>Topics:</strong> ${n.topics.replace(/\n/g,'<br>')}<br>
+    <strong>Action Items:</strong> ${n.actionItems.replace(/\n/g,'<br>')}`;
+    notesDiv.appendChild(div);
+  });
+}
+function exportData() {
+  const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'tiny1on1tracker_backup.json';
+  a.click();
+}
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try { data = JSON.parse(ev.target.result); saveData(); renderReports(); if(current) renderNotes(); } catch { alert('Invalid file'); }
+  };
+  reader.readAsText(file);
+}
+renderReports();
+</script>
+</body>
+</html>
+```
