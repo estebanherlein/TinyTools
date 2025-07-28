@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job Application Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <div class="max-w-3xl mx-auto p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold" id="title">Job Application Tracker</h1>
+        <select id="languageSelector" class="border rounded p-1 text-sm">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+        </select>
+      </div>
+      <form id="applicationForm" class="space-y-4">
+        <input
+          id="company"
+          type="text"
+          placeholder="Company"
+          class="w-full p-2 border rounded"
+          required
+        />
+        <input
+          id="role"
+          type="text"
+          placeholder="Role"
+          class="w-full p-2 border rounded"
+          required
+        />
+        <input
+          id="url"
+          type="url"
+          placeholder="Job Posting URL"
+          class="w-full p-2 border rounded"
+        />
+        <input
+          id="date"
+          type="date"
+          class="w-full p-2 border rounded"
+          required
+        />
+        <select id="step" class="w-full p-2 border rounded">
+          <option value="applied">Applied</option>
+          <option value="interviewed">Interviewed</option>
+          <option value="offer">Offer</option>
+          <option value="rejected">Rejected</option>
+          <option value="ghosted">Ghosted</option>
+          <option value="hired">Hired</option>
+        </select>
+        <textarea
+          id="notes"
+          placeholder="Notes"
+          class="w-full p-2 border rounded"
+        ></textarea>
+        <div class="flex space-x-2">
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" id="saveButton">Save</button>
+          <button type="button" id="cancelEdit" class="hidden bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Cancel</button>
+        </div>
+      </form>
+      <ul id="applicationList" class="mt-6 space-y-4"></ul>
+    </div>
+
+    <script>
+      const form = document.getElementById('applicationForm');
+      const company = document.getElementById('company');
+      const role = document.getElementById('role');
+      const url = document.getElementById('url');
+      const date = document.getElementById('date');
+      const notes = document.getElementById('notes');
+      const step = document.getElementById('step');
+      const appList = document.getElementById('applicationList');
+      const cancelEdit = document.getElementById('cancelEdit');
+      const languageSelector = document.getElementById('languageSelector');
+
+      let editIndex = null;
+      const getLang = () => localStorage.getItem('lang') || 'en';
+
+      const translations = {
+        en: {
+          title: "Job Application Tracker",
+          company: "Company",
+          role: "Role",
+          url: "Job Posting URL",
+          notes: "Notes",
+          save: "Save",
+          cancel: "Cancel",
+          stepOptions: {
+            applied: "Applied",
+            interviewed: "Interviewed",
+            offer: "Offer",
+            rejected: "Rejected",
+            ghosted: "Ghosted",
+            hired: "Hired"
+          },
+        },
+        es: {
+          title: "Seguimiento de Postulaciones",
+          company: "Empresa",
+          role: "Puesto",
+          url: "URL de la oferta",
+          notes: "Notas",
+          save: "Guardar",
+          cancel: "Cancelar",
+          stepOptions: {
+            applied: "Postulado",
+            interviewed: "Entrevistado",
+            offer: "Oferta",
+            rejected: "Rechazado",
+            ghosted: "Sin respuesta",
+            hired: "Contratado"
+          },
+        },
+      };
+
+      function setLanguage(lang) {
+        localStorage.setItem('lang', lang);
+        const t = translations[lang];
+        document.getElementById('title').textContent = t.title;
+        company.placeholder = t.company;
+        role.placeholder = t.role;
+        url.placeholder = t.url;
+        notes.placeholder = t.notes;
+        document.getElementById('saveButton').textContent = t.save;
+        cancelEdit.textContent = t.cancel;
+
+        const options = step.options;
+        Object.keys(t.stepOptions).forEach((key, idx) => {
+          options[idx].text = t.stepOptions[key];
+        });
+      }
+
+      languageSelector.addEventListener('change', (e) => setLanguage(e.target.value));
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const lang = getLang();
+        languageSelector.value = lang;
+        setLanguage(lang);
+        renderApplications();
+      });
+
+      function saveApplications(apps) {
+        localStorage.setItem('applications', JSON.stringify(apps));
+      }
+
+      function getApplications() {
+        return JSON.parse(localStorage.getItem('applications') || '[]');
+      }
+
+      function renderApplications() {
+        const apps = getApplications();
+        appList.innerHTML = '';
+        apps.forEach((app, index) => {
+          const li = document.createElement('li');
+          li.className = 'p-4 border rounded shadow-sm bg-white';
+          li.innerHTML = `
+            <div class="font-semibold">${app.company} - ${app.role}</div>
+            <div class="text-sm text-gray-600">${app.date} - ${translations[getLang()].stepOptions[app.step]}</div>
+            <div class="text-sm">${app.notes || ''}</div>
+            <div class="mt-2 space-x-2">
+              <button class="bg-blue-600 text-white px-2 py-1 rounded text-sm hover:bg-blue-700" onclick="editApplication(${index})">Edit</button>
+              <button class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700" onclick="deleteApplication(${index})">Delete</button>
+            </div>
+          `;
+          appList.appendChild(li);
+        });
+      }
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const apps = getApplications();
+        const newApp = {
+          company: company.value,
+          role: role.value,
+          url: url.value,
+          date: date.value,
+          notes: notes.value,
+          step: step.value,
+        };
+
+        if (editIndex !== null) {
+          apps[editIndex] = newApp;
+          editIndex = null;
+          cancelEdit.classList.add('hidden');
+        } else {
+          apps.push(newApp);
+        }
+
+        saveApplications(apps);
+        form.reset();
+        renderApplications();
+      });
+
+      function editApplication(index) {
+        const app = getApplications()[index];
+        company.value = app.company;
+        role.value = app.role;
+        url.value = app.url;
+        date.value = app.date;
+        notes.value = app.notes;
+        step.value = app.step;
+        editIndex = index;
+        cancelEdit.classList.remove('hidden');
+      }
+
+      cancelEdit.addEventListener('click', () => {
+        form.reset();
+        editIndex = null;
+        cancelEdit.classList.add('hidden');
+      });
+
+      function deleteApplication(index) {
+        const apps = getApplications();
+        apps.splice(index, 1);
+        saveApplications(apps);
+        renderApplications();
+      }
+    </script>
+  </body>
+</html>
